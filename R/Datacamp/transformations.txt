@@ -1,0 +1,58 @@
+#removing rows with values greater than date
+date = 5
+df = df[df.VAr1 <date]
+
+
+import numpy as np
+def transformations(data,colSort):
+    '''
+    Function that sort and make lag transformations in variables returning a dataframe
+    arg: data is a dataframe and colSort is a string value of the column to sort
+    '''
+    
+    data.sort_values(colSort,inplace=True) #sort values
+    
+    for c in data.columns:
+        if (data[c].dtype != object) & ( ("YY" not in c ) & ("QA" not in c )):
+            
+            # Quarter/Quarter difference: current quarter-last quarter
+            name_qd = str(c)+'_qd'
+            data[name_qd] = data[c]- data[c].shift()
+            
+            # Quarter/Quarter growth: (current quarter-last quarter)-1
+            name_qq = str(c)+'_qq'
+            data[name_qq] = (data[c]-data[c].shift()) -1
+            
+            # Year/year difference: (current year-last year)
+            name_yd = str(c)+'_yd'
+            data[name_yd] = data[c]-(data[c].shift(periods=4))
+           
+            # Year/year growth: (current year-last year)-1
+            name_yy = str(c)+'_yy'
+            data[name_yy] = (data[c]-data[c].shift(periods=4)) -1 
+            
+            # log of QQ difference
+            name_logqd = str(c)+'_logqd'
+            data[name_logqd] = np.log( data[c] / data[c].shift() )
+            
+            # log of Quarter/Quarter growth: (current quarter-last quarter)-1
+            name_logqq = str(c)+'_logqq'
+            data[name_logqq] = np.log( (data[c] /data[c].shift())-1 )
+            
+            # log of Year/year difference: (current year-last year)-1
+            name_logyd = str(c)+'_logyd'
+            data[name_logyd] = np.log( data[c] /(data[c].shift(periods=4)) )
+           
+            # log of Year/year growth: (current year-last year)-1
+            name_logyy = str(c)+'_logyy'
+            data[name_logyy] = np.log( (data[c] /data[c].shift(periods=4)) -1  )
+            
+            
+            #data[name_logQd]=np.log(data[c]/ data[c].shift()
+            # negative values inside the log, which gives nan with real numbers
+            #percentage *100
+
+    return data
+
+
+x =transformations(df2,'Vara')

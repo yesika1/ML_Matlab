@@ -1,6 +1,12 @@
 
 # coding: utf-8
 
+
+#####
+#lags :
+# https://faculty.fuqua.duke.edu/~rnau/Decision411_2007/411log.htm
+# http://www.ucl.ac.uk/~uctpa36/C41_note_growth_accounting.pdf
+
 # In[ ]:
 
 

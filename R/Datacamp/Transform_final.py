@@ -43,7 +43,7 @@ pdu.audit(df)
 import numpy as np
 def log_col(col, colname='Column'):
     ''' function that calculates the log of the original variables
-        if value is 0, replace for NaN
+        if value is 0, replace result for NaN
     '''
     value= np.log(col.replace(0, np.nan))
     colname = 'log_'+colname
@@ -54,7 +54,7 @@ def log_col(col, colname='Column'):
 # Definition of the function that calculates the Variable difference: Q1 = X(t)  - X(t-1)
 # * Where column names:
 #     * QD= Quarterly Difference,
-#     * YD= Quarterly Difference
+#     * YD= Yearly Difference
 
 # In[ ]:
 
@@ -104,17 +104,19 @@ def lag_difference(col,n=0,y=False,log=False, lag=False, colname='Column'):
 # Definition of the function that calculates the Variable difference: Q1 = X(t)  - X(t-1)
 # * Where column names:
 #     * QG= Quarterly Growth,
-#     * YG= Quarterly Growth
+#     * YG= Yearly Growth
 
 # In[ ]:
 
 
 def lag_growth(col, n=0, y=False, log=False,lag=False, colname='Column'):
     ''' function that calculates the lag n lag n growth:  Q1 = (( X(t) / X(t-1) )-1)*100 and returns an array
-    col = array, n = interger,number of lags calculations. y:True(4Quarters) if it is a YY calculation
+    col = array, n = interger,number of lags calculations. 
+    y:True(4 Quarters) if it is a YY calculation
     colname: string column name
     Where colname: QG= Quarterly Growth, OR  YG= Quarterly Growth
     log= True for calculations of the log of the difference
+    lag =True for calculations of the lag of the difference
     '''
     # for Quarterly calculations
     if y ==False and log==False and lag==False:
@@ -162,6 +164,7 @@ def transformations(data,colSort,n=4):
     '''
     Function that sort and make lag transformations in variables returning a dataframe
     arg: data is a dataframe and colSort is a string value of the column to sort
+    n is the number of lags to be applied to the columns
     '''
     data.sort_values(colSort,inplace=True) #sort values
 
@@ -204,6 +207,13 @@ def transformations(data,colSort,n=4):
 
                 # for yearly growth transformations
                 colname, data[colname] = lag_growth(data[c],colname= c, n=i,lag=True, y=True)
+                
+                # for log of Quarter/Quarter difference
+                colname, data[colname] = lag_difference(data[c],colname= c, y=False, log=True,lag=True)
+
+                # for log of Year/year difference: (current year-last year)
+                colname, data[colname] = lag_difference(data[c],colname= c, y=True, log=True,lag=True)
+                
 
     return data
 

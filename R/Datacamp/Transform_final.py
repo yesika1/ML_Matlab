@@ -43,15 +43,11 @@ pdu.audit(df)
 import numpy as np
 def log_col(col, colname='Column'):
     ''' function that calculates the log of the original variables
-
+        if value is 0, replace for NaN
     '''
-    for i in col:
-        if i==0 or i==None: return 0
-        else:
-            value= np.log(col)
-            colname = 'log_'+colname
-            return colname,value
-
+    value= np.log(col.replace(0, np.nan))
+    colname = 'log_'+colname
+    return colname,value
 
 # ### Transformation for Quarterly and Yearly difference.
 # 
